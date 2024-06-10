@@ -41,10 +41,40 @@ class StudentController extends Controller
         if (!$student) {
             return redirect()->route('students.index')->with("error", "Error adding student!");
         } else {
-            //Send email with user data
+            //Successful
             return redirect(route('students.index'))->with("success", "Student added successfully!");
         }
-}
+    }
+
+    public function update(Request $request, $id)
+    {
+        $student = Student::findOrFail($id);
+        $validatedData = $request->validate([
+            'first_name' => 'nullable|string',
+            'middle_name' => 'nullable|string',
+            'last_name' => 'nullable|string',
+            'email' => 'nullable|email|unique:students',
+            'phone_number' => 'nullable|unique:students',
+            'address' => 'nullable|string',
+            'age' => 'nullable|numeric'
+        ]);
+
+        // Remove fields with null values from the validated data
+        $validatedData = array_filter($validatedData, function ($value) {
+            return !is_null($value);
+        });
+
+        try {
+            // Attempt to update the student with the validated data
+            $student->update($validatedData);
+    
+            // Success message
+            return redirect()->route('students.index')->with('success', 'Student updated successfully!');
+        } catch (\Exception $e) {
+            // Error message
+            return redirect()->back()->with('error', 'Failed to update student. Please try again later.');
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -74,14 +104,6 @@ class StudentController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Student $student): void
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Student $student): void
     {
         //
     }
