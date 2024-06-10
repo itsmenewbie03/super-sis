@@ -17,6 +17,11 @@ class StudentController extends Controller
         return view("students.index");
     }
 
+    public function post(Request $request): void
+    {
+        dd('bisakol!');
+    }
+
     /**
      * Show the form for creating a new resource.
      */
