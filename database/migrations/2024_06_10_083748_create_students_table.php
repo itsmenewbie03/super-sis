@@ -9,10 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
+            $table->string('first_name');
+            $table->string('middle_name')->nullable();
+            $table->string('last_name');
+            $table->string('email')->unique();
+            $table->string('phone_number')->nullable()->unique();
+            $table->string('address');
+            $table->integer('age');
             $table->timestamps();
         });
     }

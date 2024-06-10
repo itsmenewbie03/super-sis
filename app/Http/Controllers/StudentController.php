@@ -17,10 +17,34 @@ class StudentController extends Controller
         return view("students.index");
     }
 
-    public function post(Request $request): void
+    public function post(Request $request)
     {
-        dd('bisakol!');
-    }
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email|unique:students',
+            'phone_number' => 'nullable|unique:students',
+            'address' => 'required|string',
+            'age' => 'required|numeric'
+        ]);
+
+        $student = Student::create([
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+            'age' => $request->age,
+        ]);
+
+        if (!$student) {
+            return redirect()->route('students.index')->with("error", "Error adding student!");
+        } else {
+            //Send email with user data
+            return redirect(route('students.index'))->with("success", "Student added successfully!");
+        }
+}
 
     /**
      * Show the form for creating a new resource.
