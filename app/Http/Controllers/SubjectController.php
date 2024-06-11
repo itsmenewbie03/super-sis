@@ -6,62 +6,120 @@ use App\Models\Subject;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class SubjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(): View|Factory
     {
         return view("subjects.index");
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): void
+    public function add(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'subjectname' => 'string|max:255',
+                'subjectcode' => 'string|max:255',
+            ]);
+
+            if($validator->fails()){
+                return redirect()->back()->with('error', 'Invalid input');
+            }
+
+            //Dugang2 ra nako arun chuy
+            $validatorAlreadyExist = Validator::make($request->all(), [
+                'subjectname' => 'unique:subjects,subjectname',
+                'subjectcode' => 'unique:subjects,subjectcode',
+            ]);
+
+            if($validatorAlreadyExist->fails()){
+                return redirect()->back()->with('error', 'Already Exist!!');
+            }
+
+            $subject = new Subject();
+            $subject->subject_name = $request->subjectname;
+            $subject->subject_code = $request->subjectcode;
+            $subject->save();
+
+            return redirect()->back()->with('success', 'Subject added successfully');
+        } catch (Exception $e) {
+            //return $e;
+            return redirect()->back()->with('error', 'Server Error(500)');
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): void
-    {
-        //
+    public function edit(Request $request, $id)
+    {   
+        try {
+            $subject = Subject::where('id', $id)->first();
+
+            if(!$subject){
+                return redirect()->back()->with('error', 'Subject not found!');
+            }
+
+            $validator = Validator::make($request->all(), [
+                'subjectname' => 'string|max:255',
+                'subjectcode' => 'string|max:255',
+            ]);
+
+            if($validator->fails()){
+                return redirect()->back()->with('error', 'Invalid input');
+            }
+
+            //Dugang2 ra nako arun chuy
+            $validatorAlreadyExist = Validator::make($request->all(), [
+                'subjectname' => 'unique:subjects,subjectname',
+                'subjectcode' => 'unique:subjects,subjectcode',
+            ]);
+
+            if($validatorAlreadyExist->fails()){
+                return redirect()->back()->with('error', 'Already Exist!!');
+            }
+
+            $subject = new Subject();
+            $subject->subject_name = $request->subjectname;
+            $subject->subject_code = $request->subjectcode;
+            $subject->save();
+
+            return redirect()->back()->with('success', 'Subject updated successfully!');
+        } catch (Exception $e) {
+            //return $e;
+            return redirect()->back()->with('error', 'Server Error(500)');
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Subject $subject): void
-    {
-        //
+    function delete($id){
+        try {
+            $subject = Subject::where('id', $id)->first();
+
+            if(!$subject){
+                return redirect()->back()->with('error', 'Subject not found!');
+            }
+
+            $subject->delete();
+
+            return redirect()->back()->with('success', 'Subject Deleted successfully!');
+        } catch (Exception $e) {
+            //return $e;
+            return redirect()->back()->with('error', 'Server Error(500)');
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Subject $subject): void
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Subject $subject): void
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Subject $subject): void
-    {
-        //
+    function search(Request $request){
+        try{
+            $subject = Subject::where('subjectcode', $request->search)
+                        ->orWhere('subjectname', 'like', '%'.$request->search.'%')
+                        ->all();
+            if($subject){
+                return view('subjects.index', compact('subject'));
+            } else{
+                //walay records e return
+                return view('subjects.index', compact('subject'));
+            }
+        }catch(Exception $e){
+            return redirect()->back()->with('error', 'Server Error(500)');
+        }
     }
 }
