@@ -84,8 +84,7 @@ class StudentController extends Controller
 {
     try {
         $student = Student::findOrFail($id);
-        // Delete the student
-        $student->forceDelete();
+        $student->delete();
         return redirect(route('students.index'))->with("success", "Student deleted successfully!");
     } catch (ModelNotFoundException $e) {
         return redirect(route('students.index'))->with("error", "Student not found!");
