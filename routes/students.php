@@ -8,6 +8,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [StudentController::class, 'index'])->name('students.index');
         Route::post('/', [StudentController::class, 'post'])->name('students.post');
         Route::put('/{id}', [StudentController::class, 'update'])->name('students.update');
-
+        Route::delete('/{id}', [StudentController::class, 'delete'])->name('students.delete');
     });
 });
