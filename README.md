@@ -26,3 +26,8 @@ To run this project open two terminals and run
 
 -   `php artisan serve`
 -   `npm run dev`
+
+
+## 🛠️ Project Activity
+
+![Alt](https://repobeats.axiom.co/api/embed/dbda3fc8ee3fb70a86ebce234e5eb0bd18aaad6b.svg "Repobeats analytics image")
