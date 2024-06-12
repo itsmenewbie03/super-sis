@@ -20,20 +20,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>John</td>
-                        <td>Doe</td>
-                        <td>Smith</td>
-                        <td>John@gmail.com</td>
-                        <td>20</td>
-                        <td>1234567890</td>
-                        <td>123 Main St, New York, NY 10030</td>
-                        <td class="text-center">
-                            <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
-                    </tr>
+                    @foreach ($students as $student)
+                        <tr>
+                            <td>{{$student->id}}</td>
+                            <td>{{$student->first_name}}</td>
+                            <td>{{$student->middle_name}}</td>
+                            <td>{{$student->last_name}}</td>
+                            <td>{{$student->email}}</td>
+                            <td>{{$student->age}}</td>
+                            <td>{{$student->phone_number}}</td>
+                            <td>{{$student->address}}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $student->id }}">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $student->id }}">Delete</button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
