@@ -11,11 +11,11 @@
         </nav>
     </div>
 
-    {{-- <div class="mt-3 mb-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-            Add Student
+    <div class="mt-3 mb-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGradeModal">
+            Add Grade
         </button>
-    </div> --}}
+    </div>
     @include('components.modals.grade')
 
     <section class="section dashboard">
@@ -23,7 +23,13 @@
 
             {{-- Left side columns --}}
             <div class="col-lg-12">
-
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <div class="alert alert-danger" role="alert">
+                            {{ $error }}
+                        </div>
+                    @endforeach
+                @endif
                 @if (session('error'))
                     <div class="alert alert-danger" role="alert">
                         {{ session('error') }}
@@ -34,7 +40,7 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                
+
                 @include('components.table.grade')
             </div>
 
