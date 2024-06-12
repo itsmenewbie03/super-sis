@@ -14,9 +14,11 @@ class Subject extends Model
     protected $fillable = [
         'subjectcode',
         'subjectname',
+        'description'
     ];
 
-    public function grades(){
+    public function grades()
+    {
         return $this->hasMany(Grade::class);
     }
 }
