@@ -21,7 +21,8 @@ class Student extends Model
         'age',
     ];
 
-    public function grades(){
+    public function grades()
+    {
         return $this->hasMany(Grade::class);
     }
 }
