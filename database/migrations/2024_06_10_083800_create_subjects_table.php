@@ -9,9 +9,9 @@ return new class () extends Migration {
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('subjectcode');
-            $table->string('subjectname');
-            $table->string('description');
+            $table->string('subjectcode')->unique();
+            $table->string('subjectname')->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

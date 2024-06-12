@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
+use Illuminate\Validation\Rule;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -13,34 +14,42 @@ class SubjectController extends Controller
 {
     public function index(): View|Factory
     {
-        return view("subjects.index");
+        $subjects = Subject::all();
+        
+        return view("subjects.index", compact('subjects'));
     }
 
     public function add(Request $request)
     {
         try {
             $validator = Validator::make($request->all(), [
-                'subjectname' => 'string|max:255',
-                'subjectcode' => 'string|max:255',
+                'subjectCode' => 'required|string|max:255',
+                'subjectName' => 'required|string|max:255',
+                'subjectDescription' => 'nullable|string|max:255',
             ]);
 
             if($validator->fails()){
                 return redirect()->back()->with('error', 'Invalid input');
             }
 
-            //Dugang2 ra nako arun chuy
             $validatorAlreadyExist = Validator::make($request->all(), [
-                'subjectname' => 'unique:subjects,subjectname',
-                'subjectcode' => 'unique:subjects,subjectcode',
+                'subjectName' => 'unique:subjects,subjectname',
+                'subjectCode' => 'unique:subjects,subjectcode',
             ]);
 
-            if($validatorAlreadyExist->fails()){
-                return redirect()->back()->with('error', 'Already Exist!!');
+            if ($validatorAlreadyExist->fails()) {
+                if ($validatorAlreadyExist->errors()->has('subjectName')) {
+                    return redirect()->back()->with('error', 'Subject Name already exists.');
+                }
+                if ($validatorAlreadyExist->errors()->has('subjectCode')) {
+                    return redirect()->back()->with('error', 'Subject Code already exists.');
+                }
             }
 
             $subject = new Subject();
-            $subject->subject_name = $request->subjectname;
-            $subject->subject_code = $request->subjectcode;
+            $subject->subjectcode = $request->subjectCode;
+            $subject->subjectname = $request->subjectName;
+            $subject->description = $request->subjectDescription;
             $subject->save();
 
             return redirect()->back()->with('success', 'Subject added successfully');
@@ -51,7 +60,7 @@ class SubjectController extends Controller
     }
 
     public function edit(Request $request, $id)
-    {   
+    {
         try {
             $subject = Subject::where('id', $id)->first();
 
@@ -60,27 +69,37 @@ class SubjectController extends Controller
             }
 
             $validator = Validator::make($request->all(), [
-                'subjectname' => 'string|max:255',
-                'subjectcode' => 'string|max:255',
+                'subjectCode' => 'required|string|max:255',
+                'subjectName' => 'required|string|max:255',
+                'subjectDescription' => 'nullable|string|max:255',
             ]);
 
             if($validator->fails()){
                 return redirect()->back()->with('error', 'Invalid input');
             }
 
-            //Dugang2 ra nako arun chuy
+            //to ignore the current data that's already in the database
             $validatorAlreadyExist = Validator::make($request->all(), [
-                'subjectname' => 'unique:subjects,subjectname',
-                'subjectcode' => 'unique:subjects,subjectcode',
+                'subjectCode' => [
+                    Rule::unique('subjects', 'subjectcode')->ignore($subject->id),
+                ],
+                'subjectName' => [
+                    Rule::unique('subjects', 'subjectname')->ignore($subject->id),
+                ],
             ]);
 
-            if($validatorAlreadyExist->fails()){
-                return redirect()->back()->with('error', 'Already Exist!!');
+            if ($validatorAlreadyExist->fails()) {
+                if ($validatorAlreadyExist->errors()->has('subjectName')) {
+                    return redirect()->back()->with('error', 'Subject Name already exists.');
+                }
+                if ($validatorAlreadyExist->errors()->has('subjectCode')) {
+                    return redirect()->back()->with('error', 'Subject Code already exists.');
+                }
             }
 
-            $subject = new Subject();
-            $subject->subject_name = $request->subjectname;
-            $subject->subject_code = $request->subjectcode;
+            $subject->subjectcode = $request->subjectCode;
+            $subject->subjectname = $request->subjectName;
+            $subject->description = $request->subjectDescription;
             $subject->save();
 
             return redirect()->back()->with('success', 'Subject updated successfully!');
@@ -103,22 +122,6 @@ class SubjectController extends Controller
             return redirect()->back()->with('success', 'Subject Deleted successfully!');
         } catch (Exception $e) {
             //return $e;
-            return redirect()->back()->with('error', 'Server Error(500)');
-        }
-    }
-
-    function search(Request $request){
-        try{
-            $subject = Subject::where('subjectcode', $request->search)
-                        ->orWhere('subjectname', 'like', '%'.$request->search.'%')
-                        ->all();
-            if($subject){
-                return view('subjects.index', compact('subject'));
-            } else{
-                //walay records e return
-                return view('subjects.index', compact('subject'));
-            }
-        }catch(Exception $e){
             return redirect()->back()->with('error', 'Server Error(500)');
         }
     }

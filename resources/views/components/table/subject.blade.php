@@ -16,16 +16,18 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @foreach ($subjects as $subjectsData)
                     <tr>
-                        <td>1</td>
-                        <td>Mathematics</td>
-                        <td>MAT123</td>
-                        <td>Mathematics is the study of numbers, quantity, space, structure, and change.</td>
+                        <td>{{$subjectsData->id}}</td>
+                        <td>{{$subjectsData->subjectname}}</td>
+                        <td>{{$subjectsData->subjectcode}}</td>
+                        <td>{{$subjectsData->description}}</td>
                         <td class="text-center">
-                            <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{$subjectsData->id}}">Edit</button>
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$subjectsData->id}}">Delete</button>
                         </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
