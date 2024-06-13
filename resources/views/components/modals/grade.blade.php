@@ -59,7 +59,6 @@
                                     '5.00',
                                     'INC',
                                     'DRP',
-                                    'INV(FOR TESTING ONLY!)',
                                 ];
                             @endphp
                             @foreach ($valid_grades as $grade)
