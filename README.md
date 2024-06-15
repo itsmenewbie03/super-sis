@@ -31,3 +31,9 @@ To run this project open two terminals and run
 ## 🛠️ Project Activity
 
 ![Alt](https://repobeats.axiom.co/api/embed/dbda3fc8ee3fb70a86ebce234e5eb0bd18aaad6b.svg "Repobeats analytics image")
+
+## 💖 Contributors
+
+<a href="https://github.com/itsmenewbie03/super-sis/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=itsmenewbie03/super-sis" />
+</a>
